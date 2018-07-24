@@ -25,8 +25,10 @@ SECRET_KEY = '@#u73-_p*5w119(x$g!h3&&q!yy2_ch1jqtnkv3l5*g2yqyi=2'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.88.246']
+ALLOWED_HOSTS = ['192.168.88.246','127.0.0.1','192.168.0.107']
 
+#覆寫預設使用者模組 -by jiancheng
+#AUTH_USER_MODEL='api.member'
 
 # Application definition
 
@@ -37,9 +39,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #add app -jiancheng
+    #add app -by jiancheng
     'api',
     'rest_framework',
+    
 ]
 
 MIDDLEWARE = [
@@ -82,10 +85,8 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'androidproject',
-        #'USER': 'android',
-        #'PASSWORD': 'qu2WkmQZ_',
-        'USER': 'root',
-        'PASSWORD': 'oscar0130',
+        'USER': 'android',
+        'PASSWORD': 'qu2WkmQZ_',       
         'HOST': '35.201.145.154',        
         'PORT': '3306',
     }
@@ -124,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-#date setting   -jiancheng
+#date setting   -by jiancheng
 DATE_FORMAT = 'Y-m-d'
 DATETIME_FORMAT = 'Y-m-d H:i:s'
 

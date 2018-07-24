@@ -2,38 +2,45 @@ from django.db import models
 
 from datetime import datetime
 from django.utils import timezone
+
 from django.contrib.auth.models import AbstractUser
+
+
 # Create your models here.
 
-member_type = (
-    ('管理員', '管理員'),
-    ('一般會員', '一般會員'),
-    ('贊助商', '贊助商'),
-)
+'''
+class Music(models.Model):
+    song = models.TextField()
+    singer = models.TextField()
+    last_modify_date = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
-class Member(AbstractUser):
+    class Meta:
+        db_table = "music"
+
+'''
+
+class Member(models.Model):
     id = models.AutoField(primary_key=True,verbose_name='會員代號')
-    account = models.EmailField(unique=True, max_length=50,verbose_name='帳號')
+    account = models.EmailField(unique=True, max_length=50,verbose_name='帳號',help_text='你的電子信箱')
     identifier = models.CharField(max_length=22,verbose_name='會員識別碼')
-    membertype = models.CharField(max_length=128, choices=member_type, verbose_name='會員類別', default='')    
-    name = models.CharField(max_length=20,verbose_name='姓名')
+    membertype = models.ForeignKey('Membertype',on_delete = models.DO_NOTHING,verbose_name='會員類型代號')
+    name = models.CharField(max_length=20,verbose_name='姓名',blank=True)
     nickname = models.CharField(max_length=20, blank=True, null=True,verbose_name='暱稱')
-    password = models.CharField(max_length=128,verbose_name='密碼')
-    localpicture = models.ImageField(max_length=64, blank=True, null=True,verbose_name='本機照片')
-    dbpicture = models.ImageField(max_length=64, blank=True, null=True,verbose_name='資料庫照片')
+    password = models.CharField(max_length=128,verbose_name='密碼',blank=True)
+    localpicture = models.CharField(max_length=64, blank=True, null=True,verbose_name='本機照片')
+    dbpicture = models.CharField(max_length=64, blank=True, null=True,verbose_name='資料庫照片')
     renew_time = models.DateTimeField(default=timezone.now,verbose_name='更新時間')
 
-    class Meta(AbstractUser.Meta):
-        db_table = 'mbr_member'
-        swappable = 'AUTH_USER_MODEL'
-        verbose_name = '會員資訊'
-        verbose_name_plural=verbose_name
+    class Meta:
+        db_table = 'mbr_member' 
 
-class Membertype(AbstractUser):
-    membertype_id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=10,default='member')
+class Membertype(models.Model):
+    membertype_id = models.IntegerField(primary_key=True,verbose_name='會員類型代號')
+    name = models.CharField(max_length=10,verbose_name='類型名稱')
     renew_time = models.DateTimeField(default=timezone.now,verbose_name='更新時間')
-    class Meta(AbstractUser.Meta):
+
+    class Meta:
         db_table = 'sys_membertype'
-        verbose_name = '會員類型'
-        verbose_name_plural=verbose_name
+        
+ 
