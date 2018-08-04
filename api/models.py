@@ -3,44 +3,47 @@ from django.db import models
 from datetime import datetime
 from django.utils import timezone
 
+from pygments.lexers import get_lexer_by_name
+from pygments.lexers import get_all_lexers
+from pygments.styles import get_all_styles
+from pygments.formatters.html import HtmlFormatter
+from pygments import highlight
+
+LEXERS = [item for item in get_all_lexers() if item[1]]
+LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
+STYLE_CHOICES = sorted((item, item) for item in get_all_styles())
+
+
 from django.contrib.auth.models import AbstractUser
 
 
 # Create your models here.
 
-'''
 class Music(models.Model):
-    song = models.TextField()
-    singer = models.TextField()
-    last_modify_date = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, blank=True, default='')
+    code = models.TextField()
+    linenos = models.BooleanField(default=False)
+    language = models.CharField(choices=LANGUAGE_CHOICES, default='python', max_length=100)
+    style = models.CharField(choices=STYLE_CHOICES, default='friendly', max_length=100)
+    owner = models.ForeignKey('auth.User',related_name='musics',on_delete=models.CASCADE)
+    highlighted = models.TextField()
 
     class Meta:
-        db_table = "music"
+        ordering = ('created',)
 
-'''
 
-class Member(models.Model):
-    id = models.AutoField(primary_key=True,verbose_name='會員代號')
-    account = models.EmailField(unique=True, max_length=50,verbose_name='帳號',help_text='你的電子信箱')
-    identifier = models.CharField(max_length=22,verbose_name='會員識別碼')
-    membertype = models.ForeignKey('Membertype',on_delete = models.DO_NOTHING,verbose_name='會員類型代號')
-    name = models.CharField(max_length=20,verbose_name='姓名',blank=True)
-    nickname = models.CharField(max_length=20, blank=True, null=True,verbose_name='暱稱')
-    password = models.CharField(max_length=128,verbose_name='密碼',blank=True)
-    localpicture = models.CharField(max_length=64, blank=True, null=True,verbose_name='本機照片')
-    dbpicture = models.CharField(max_length=64, blank=True, null=True,verbose_name='資料庫照片')
-    renew_time = models.DateTimeField(default=timezone.now,verbose_name='更新時間')
+def save(self, *args, **kwargs):
+    """
+    使用`pygments`库创建一个高亮显示的HTML表示代码段。
+    """
+    lexer = get_lexer_by_name(self.language)
+    linenos = self.linenos and 'table' or False
+    options = self.title and {'title': self.title} or {}
+    formatter = HtmlFormatter(style=self.style, linenos=linenos,
+                              full=True, **options)
+    self.highlighted = highlight(self.code, lexer, formatter)
+    super(Music, self).save(*args, **kwargs)
 
-    class Meta:
-        db_table = 'mbr_member' 
 
-class Membertype(models.Model):
-    membertype_id = models.IntegerField(primary_key=True,verbose_name='會員類型代號')
-    name = models.CharField(max_length=10,verbose_name='類型名稱')
-    renew_time = models.DateTimeField(default=timezone.now,verbose_name='更新時間')
-
-    class Meta:
-        db_table = 'sys_membertype'
-        
  
