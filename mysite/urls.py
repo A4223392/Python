@@ -15,9 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path,re_path,include
+from api import views as api_view
+from rest_framework.routers import DefaultRouter
 
+router = DefaultRouter()
+router.register('member',api_view.MemberViewSet)  
+router.register('membertype',api_view.MembertypeViewSet)
+router.register('friendship',api_view.FriendShipViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),   
-    path('api/',include('api.urls')),
+    path('admin/', admin.site.urls),
+    path('',api_view.index),
+    #re_path(r'api/',include('api.urls')),
+    path('api/',include(router.urls))
 ]

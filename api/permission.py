@@ -1,15 +1,13 @@
 from rest_framework import permissions
 
-class IsOwnerOrReadOnly(permissions.BasePermission):
+class IsAuthorOrReadOnly(permissions.BasePermission):
     """
-    自定义权限只允许对象的所有者编辑它。
+    只允许作者修改但允许所有人读的权限设置
     """
-
     def has_object_permission(self, request, view, obj):
-        # 读取权限允许任何请求，
-        # 所以我们总是允许GET，HEAD或OPTIONS请求。
+        # 所有用户都允许读取,所以安全的http方法会直接放行
+        # SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
         if request.method in permissions.SAFE_METHODS:
             return True
-
-        # 只有该music的所有者才允许写权限。
-        return obj.owner == request.user
+        # 写入权限需要作者本人
+        return obj.author == request.user

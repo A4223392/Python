@@ -84,19 +84,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
         #'ENGINE': 'django.db.backends.mysql',
-
         #'NAME': 'androidproject',
         #'USER': 'android',
         #'PASSWORD': 'qu2WkmQZ_',       
         #'HOST': '35.201.145.154',        
         #'PORT': '3306',
-        
-        #'NAME': 'androidproject',
-        #'USER': 'android',
-        #'PASSWORD': 'qu2WkmQZ_',       
-        #'HOST': '35.189.176.223',        
-        #'PORT': '3306',
-       
     }
 }
 
@@ -145,9 +137,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
-
-REST_FRAMEWORK = {
-    'PAGE_SIZE': 10
-}
 
